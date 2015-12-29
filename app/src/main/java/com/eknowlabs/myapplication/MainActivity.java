@@ -96,7 +96,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_promo) {
 
-        } else if (id == R.id.nav_help) {*/
+        } else if (id == R.id.nav_help) {
+
+        just testing bitbucket
+
+        */
 
         if (id == R.id.nav_share) {
             // Handle the camera action
