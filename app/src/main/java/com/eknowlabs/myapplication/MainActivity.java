@@ -98,9 +98,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_help) {
 
-        just testing bitbucket
-
-        */
+        } */
 
         if (id == R.id.nav_share) {
             // Handle the camera action
@@ -114,4 +112,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 }
+
+
 
