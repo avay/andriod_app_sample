@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_find) {
-            // Handle the camera action
+        if (id == R.id.nav_find) {
+            // Handle the find action
         } else if (id == R.id.nav_cal) {
 
         } else if (id == R.id.nav_fav) {
@@ -97,12 +97,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_promo) {
 
         } else if (id == R.id.nav_help) {
-
-        } */
-
-        if (id == R.id.nav_share) {
-            // Handle the camera action
-        } else if (id == R.id.nav_share1) {
 
         }
 

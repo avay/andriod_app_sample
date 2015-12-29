@@ -2,46 +2,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-    <!--<item
+        <item
             android:id="@+id/nav_find"
             android:icon="@drawable/ic_menu_find"
-            android:title="Find Parking" />-->
-        <!--<item
+            android:title="Find Parking" />
+        <item
             android:id="@+id/nav_cal"
             android:icon="@drawable/ic_menu_calendar"
             android:title="Reservations" />
         <item
             android:id="@+id/nav_fav"
             android:icon="@drawable/ic_menu_fav"
-            android:title="Favourites" />-->
-        <!--<item
+            android:title="Favourites" />
+        <item
             android:id="@+id/nav_acc"
             android:icon="@drawable/ic_menu_profile"
-            android:title="Account" />-->
+            android:title="Account" />
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
             android:title="Free Park" />
         <item
-            android:id="@+id/nav_share1"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Free Park" />
-      <!--  <item
             android:id="@+id/nav_payment"
-            android:icon="@drawable/ic_menu_payment"
+            android:icon="@drawable/ic_menu_pay"
             android:title="Payment" />-->
-       <!-- <item
+        <item
             android:id="@+id/nav_qrscan"
             android:icon="@drawable/ic_menu_qrscan"
-            android:title="Beepscan" />-->
-        <!--<item
+            android:title="Beepscan" />
+        <item
             android:id="@+id/nav_promo"
             android:icon="@drawable/ic_menu_promo"
             android:title="Promotions" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
-            android:title="Help" />-->
+            android:title="Help" />
     </group>
 
 </menu>
