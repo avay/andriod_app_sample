@@ -100,10 +100,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_share) {
             // Handle the camera action
-        } /*else if (id == R.id.nav_promo) {
+        } else if (id == R.id.nav_share1) {
 
-        } else if (id == R.id.nav_help) {
-*/
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,3 +110,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 }
+
