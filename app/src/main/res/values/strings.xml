@@ -1,10 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
-
+    <string name="app_result">Search Results</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="search_title">Search parking...</string>
     <string name="action_settings">Settings</string>
     <string name="search_hint">Search parking...</string>
     <string name="search_result">Result!!</string>
+    <string name="no">cancel</string>
+    <string name="yes">ok</string>
+    <string name="tab_date">DATE</string>
+    <string name="tab_time">TIME</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
