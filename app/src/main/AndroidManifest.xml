@@ -14,10 +14,10 @@
         android:theme="@style/AppTheme">
     <meta-data
         android:name="com.parse.APPLICATION_ID"
-        android:value="IUTrKOM5xT4Wv2CPepy0atjrbTpLJ1iHPECDteDF" />
+        android:value="QlpG1uupgRm8ZwO4QY1keqgO0nLRYKFL2ECz10qU" />
     <meta-data
         android:name="com.parse.CLIENT_KEY"
-        android:value="goLld2qpuzqnrEr0XRXlvbNj30ttO9Q0PFJSnqOB" />
+        android:value="07vvto4wsd37f38GkhSuQ2sLh7RhmVzO5oURRrpc" />
      <meta-data
          android:name="com.google.android.gms.version"
          android:value="@integer/google_play_services_version"/>

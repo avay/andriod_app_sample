@@ -29,7 +29,7 @@ import java.util.Calendar;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
+ * {@link OnSearchButtonPressListener} interface
  * to handle interaction events.
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -48,7 +48,7 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
     private TextView from_field, to_field, atvPlaces ;
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSearchButtonPressListener mListener;
 
     public SearchFragment() {
     }
@@ -67,9 +67,7 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                              Bundle savedInstanceState) {
         if (linearLayout == null) {
             linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_search, container, false);
-
             atvPlaces = (TextView) linearLayout.findViewById(R.id.textView0);
-
             atvPlaces.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -82,7 +80,6 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                     }
                 }
             });
-
             from_field = (TextView) linearLayout.findViewById(R.id.from_date_time);
             from_field.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,7 +96,6 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                     showDialog(str);
                 }
             });
-
             btn =(Button) linearLayout.findViewById(R.id.button1);
             btn.setOnClickListener(
                     new View.OnClickListener() {
@@ -109,8 +105,8 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                                 from_date = (String) from_field.getText();
                                 to_date = (String) to_field.getText();
                                 location = (String) atvPlaces.getText();
-                                mListener = (OnFragmentInteractionListener) getContext();
-                                mListener.onFragmentInteraction(from_date,to_date,location);
+                                mListener = (OnSearchButtonPressListener) getContext();
+                                mListener.SearchButtonPress(from_date,to_date,location);
                             }
                             catch (ClassCastException e) {
                                 throw new ClassCastException("Called Activity must implement OnFragmentInteractionListener");
@@ -118,7 +114,6 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                         }
                     });
         }
-
         String strDate = "Now";
         from_field.setText(strDate);
         Calendar cal = Calendar.getInstance();
@@ -142,7 +137,6 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
                 Log.i(TAG, status.getStatusMessage());
-
             } else if (resultCode == Activity.RESULT_CANCELED) {
             }
         }
@@ -158,8 +152,8 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnSearchButtonPressListener) {
+            mListener = (OnSearchButtonPressListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -180,10 +174,11 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
         else if (target_view == "to") to_field.setText(text);
     }
 
-    public interface OnFragmentInteractionListener {
+    /*public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
+        ft=ft+"&$&calledfromSF";
         void onFragmentInteraction(String ft, String tt, String lc);
-    }
+    }*/
 
 }
 

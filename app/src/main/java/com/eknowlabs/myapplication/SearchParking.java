@@ -4,22 +4,17 @@ import com.parse.ParseObject;
 /**
  * Created by Avay on 1/23/2016.
  */
-@ParseClassName("Location")
-public class Location extends ParseObject{
-    public Location(){
-
+@ParseClassName("SearchParking")
+public class SearchParking extends ParseObject{
+    public SearchParking(){
     }
 
-    public String getPlaceName(){
-        return getString("placeName");
+    public String getLocation(){
+        return getString("Location");
     }
 
     public String getParkingName(){
         return getString("parkingName");
-    }
-
-    public int getRent(){
-        return getInt("rentPerHour");
     }
 
 }
