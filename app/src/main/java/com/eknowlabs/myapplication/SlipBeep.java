@@ -12,6 +12,14 @@ import com.parse.ParseUser;
  */
 public class SlipBeep extends Application {
 
+    public static final boolean APPDEBUG = false;
+
+    // Debugging tag for the application
+    public static final String APPTAG = "Slipbeep";
+
+    public SlipBeep() {
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

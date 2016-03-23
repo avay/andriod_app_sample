@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private boolean servicesConnected() {
+    /*private boolean servicesConnected() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int resultCode = googleAPI.isGooglePlayServicesAvailable(this);
 
@@ -304,7 +305,7 @@ public class MainActivity extends AppCompatActivity
             }
             return false;
         }
-    }
+    }*/
 
 
     /*@Override
