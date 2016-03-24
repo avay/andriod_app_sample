@@ -46,7 +46,7 @@ public class SearchFragment extends Fragment implements DateTimePicker.OnDateTim
     private AutoCompleteTextView autoCompleteTextView;
     private LinearLayout option;
     private TextView from_field, to_field, atvPlaces ;
-    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 100;
 
     private OnSearchButtonPressListener mListener;
 

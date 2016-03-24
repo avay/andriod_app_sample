@@ -41,6 +41,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     //private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
     private SearchFragment firstFragment;
+    private InputParking secondFragment;
     Class FragmentClass;
     private SearchParking parkinginfo;
     //private GoogleApiClient mGoogleApiClient;
@@ -276,18 +279,29 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    @Override
+    /*@Override
     public void SubmitButtonPress(String str) {
         //final String listStr = "";
         String text = str;
         Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        firstFragment.onActivityResult(requestCode, resultCode, data);
 
+        if ( requestCode == 100) {
+            firstFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        else if (requestCode == 101) {
+            secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            //secondFragment =
+            secondFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        else if (requestCode == 9000) {
+            secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            secondFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /*private boolean servicesConnected() {
@@ -393,5 +407,23 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
+    @Override
+    public void SubmitButtonPress(LatLng ltlg) {
+        SupportMapFragment NestedMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        final LatLng newltlg = ltlg;
+        if (NestedMapFragment != null) {
+            //NestedMapFragment.changeMap(ltlg);
+            NestedMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap map) {
+                    map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(newltlg, 17), 2000, null);
+                    map.addMarker(new MarkerOptions().position(newltlg).title("test"));
+                    map.getUiSettings().setAllGesturesEnabled(true);
+                    map.getUiSettings().setCompassEnabled(true);
+                    map.getUiSettings().setZoomControlsEnabled(true);
+                }
+            });
+        }
+    }
 }

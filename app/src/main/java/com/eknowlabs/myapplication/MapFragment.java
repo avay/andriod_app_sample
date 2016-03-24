@@ -25,12 +25,14 @@ public class MapFragment extends SupportMapFragment {
     private GoogleMap map;
     private SupportMapFragment mSupportMapFragment;
     private LatLng mPosition;
+    private String pName;
     //private SupportMapFragment mSupportMapFragment;
 
 
 
     public MapFragment() {
         // Required empty public constructor
+        //this.pName = "test";
     }
 
     public static MapFragment newInstance(LatLng position) {
@@ -47,7 +49,7 @@ public class MapFragment extends SupportMapFragment {
         //super.onCreateView(inflater, container, savedInstanceState);
         //View v = super.onCreateView(arg0, arg1, arg2);
         super.onCreateView(inflater, container, savedInstanceState);
-        View v=  inflater.inflate(R.layout.fragment_map, container, false);
+        View v =  inflater.inflate(R.layout.fragment_map, container, false);
         initMap();
         return v;
     }
@@ -74,5 +76,20 @@ public class MapFragment extends SupportMapFragment {
             });
         }
     }
+
+    /*public void changeMap(LatLng position) {
+       // mSupportMapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        //MarkerOptions options = new MarkerOptions().position(latLng).title("I am here!");
+        this.mPosition = position;
+        this.pName = "test";
+        mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap map) {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mPosition, 17), 2000, null);
+                map.addMarker(new MarkerOptions().position(mPosition).title(pName));
+            }
+        });
+        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+    }*/
 
 }

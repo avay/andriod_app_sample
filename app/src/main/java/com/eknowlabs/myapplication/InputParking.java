@@ -40,9 +40,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -71,6 +78,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_CHECK_SETTINGS = 101;
     private String mParam1;
     private String mParam2;
     private CoordinatorLayout coordinatorLayout;
@@ -80,7 +88,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword, inputLayoutSpaceCount;
     private Button btnSignUp;
     private Spinner Parking_types_spinner, Property_types_spinner;
-    private OnSubmitButtonPressListener mListener;
+    //private OnSubmitButtonPressListener mListener;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private GoogleMap googleMap;
@@ -92,6 +100,9 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private LocationRequest mLocationRequest;
     private Location lastLocation;
     private Location currentLocation;
+    private MapFragment mMapFragment;
+    private OnSubmitButtonPressListener mListener;
+
 
     public InputParking() {
         // Required empty public constructor
@@ -122,6 +133,20 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1000); // 1 second, in milliseconds
+        //googleMap = mapView.getMapAsync(OnMapReadyCallback);
     }
 
     @Override
@@ -142,27 +167,6 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             Property_types_spinner.setAdapter(Property_types_adapter);
             Property_types_spinner.setOnItemSelectedListener(this);
             inputLayoutSpaceCount = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_no_of_parking_space);
-
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                        .addConnectionCallbacks(this)
-                        .addOnConnectionFailedListener(this)
-                        .addApi(LocationServices.API)
-                        .build();
-            }
-
-            // Create the LocationRequest object
-            mLocationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                    .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-            //googleMap = mapView.getMapAsync(OnMapReadyCallback);
-
-            //Perform any camera updates here
-
-            //return v;
-
-
             inputLayoutName = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_name);
             inputLayoutEmail = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_email);
             inputLayoutPassword = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_password);
@@ -180,14 +184,22 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                 @Override
                 public void onClick(View view) {
                     //submitForm();
-                    handleNewLocation(mLastLocation);
+                    if (mListener != null && currentLocation != null) {
+                        double currentLatitude = currentLocation.getLatitude();
+                        double currentLongitude = currentLocation.getLongitude();
+                        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+                        String latlong = String.valueOf(currentLocation.getLatitude()) + String.valueOf(currentLocation.getLongitude());
+                        Toast.makeText(getContext(), latlong, Toast.LENGTH_SHORT).show();
+                        //String teststr = "input parking fragment";
+                        mListener.SubmitButtonPress(latLng);
+                    }
+                    //handleNewLocation(currentLocation);
 
                 }
             });
 
-
                 FragmentManager fm1 = getChildFragmentManager();
-                MapFragment mMapFragment = MapFragment.newInstance(new LatLng(0, 0));
+                mMapFragment = MapFragment.newInstance(new LatLng(0, 0));
                 FragmentTransaction ip_ftr = fm1.beginTransaction();
                 ip_ftr.add(R.id.my_map_fragment, mMapFragment);
                 ip_ftr.commit();
@@ -199,12 +211,12 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    /*public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             String teststr = "input parking fragment";
             mListener.SubmitButtonPress(teststr);
         }
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -215,6 +227,13 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onStart() {
+        //mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
+        super.onStart();
     }
 
     @Override
@@ -345,16 +364,64 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (SlipBeep.APPDEBUG) {
-            Log.i(TAG, "Location services connected.");
+            Log.i(SlipBeep.APPTAG, "inside on connected");
         }
-        getLocation();
+        getLocationSettings();
     }
 
-    private void getLocation() {
+    private void getLocationSettings() {
+
         // If Google Play Services is available
         if (servicesConnected()) {
+
+            Log.i(SlipBeep.APPTAG, "google api services available");
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(mLocationRequest);
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+            result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+                @Override
+                public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                    final Status status = locationSettingsResult.getStatus();
+                    //final LocationSettingsStates states = locationSettingsResult.getLocationSettingsStates();
+                    switch (status.getStatusCode()) {
+                        case LocationSettingsStatusCodes.SUCCESS:
+                            // All location settings are satisfied. The client can
+                            // initialize location requests here.
+                            getLocation();
+                            break;
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied, but this can be fixed
+                            // by showing the user a dialog.
+                            try {
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                Log.i(SlipBeep.APPTAG, "calling the location settings window");
+                                status.startResolutionForResult(
+                                        getActivity(), REQUEST_CHECK_SETTINGS);
+                                Log.i(SlipBeep.APPTAG, "after location settings result activity callback");
+
+
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way
+                            // to fix the settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            });
+        }
+    }
+
+
+        private void getLocation() {
+
             // Get the current location
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                Log.i(SlipBeep.APPTAG, "permission to access fine location is not mentioned in manifest");
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -365,18 +432,21 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 return;
             }
-            currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        } else {
-            currentLocation = null;
-            return;
+            PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+            Log.d(TAG, "Location update started ..............: ");
+            //currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (currentLocation == null){
+                Log.i(SlipBeep.APPTAG, "currentlocation is still null after fused location api settings");
+            }
         }
-    }
 
     private boolean servicesConnected() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int resultCode = googleAPI.isGooglePlayServicesAvailable(getContext());
+        int resultCode = googleAPI.isGooglePlayServicesAvailable(getActivity());
 
         if (ConnectionResult.SUCCESS == resultCode) {
+            Log.i(SlipBeep.APPTAG, "google play services is available");
             return true;
         } else {
             Dialog dialog = googleAPI.getErrorDialog(getActivity(), resultCode, 0);
@@ -390,11 +460,9 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
         }
     }
 
-
     public static class ErrorDialogFragment extends DialogFragment {
         // Global field to contain the error dialog
         private Dialog mDialog;
-
         /**
          * Default constructor. Sets the dialog field to null
          */
@@ -402,7 +470,6 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             super();
             mDialog = null;
         }
-
         /*
          * Set the dialog to display
          *
@@ -411,7 +478,6 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
         public void setDialog(Dialog dialog) {
             mDialog = dialog;
         }
-
         /*
          * This method must return a Dialog to the DialogFragment.
          */
@@ -419,25 +485,39 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
-
         /*public void show(FragmentManager fm_err, String errorfragment) {
         }*/
     }
 
-    private void handleNewLocation(Location mLastLocation) {
-        double currentLatitude = mLastLocation.getLatitude();
-        double currentLongitude = mLastLocation.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-        String latlong = String.valueOf(mLastLocation.getLatitude()) + String.valueOf(mLastLocation.getLongitude());
-        Toast.makeText(getContext(), latlong, Toast.LENGTH_SHORT).show();
-        if (latLng != null) {
-            MarkerOptions options = new MarkerOptions().position(latLng).title("I am here!");
-            googleMap.addMarker(options);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        }
+    /*private void handleNewLocation(Location mLastLocation) {
+        //if (mLastLocation == null) {
+            ////String error_msg = " no location data recived";
+            //Toast.makeText(getContext(), error_msg, Toast.LENGTH_SHORT).show();
+        //}
+        //else if (mLastLocation != null) {
+            *//*double currentLatitude = mLastLocation.getLatitude();
+            double currentLongitude = mLastLocation.getLongitude();
+            LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+            String latlong = String.valueOf(mLastLocation.getLatitude()) + String.valueOf(mLastLocation.getLongitude());
+            Toast.makeText(getContext(), latlong, Toast.LENGTH_SHORT).show();*//*
+            //String parking_name = "test";
+            //if (latLng != null) {
+                //MapFragment newMapFragment = new MapFragment();
+                mMapFragment.changeMap(latLng);
+                //FragmentManager fm1 = getChildFragmentManager();
+            *//*MapFragment newMapFragment = MapFragment.newInstance(latLng);
+            FragmentTransaction ip_ftr = getChildFragmentManager().beginTransaction();
+            ip_ftr.replace(R.id.my_map_fragment, newMapFragment);
+            ip_ftr.commit();
+            transaction.replace(R.id.fragment_container, fragment);*//*
+                //MarkerOptions options = new MarkerOptions().position(latLng).title("I am here!");
+                //googleMap.addMarker(options);
+                //googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+           // }
+        //}
         //String latlong = String.valueOf(mLastLocation.getLatitude()) + String.valueOf(mLastLocation.getLongitude());
         //Toast.makeText(MainActivity.this, latlong, Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -447,7 +527,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         currentLocation = null;
                         return;
                     }
@@ -468,7 +548,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     public void onConnectionSuspended(int i) {
         if (SlipBeep.APPDEBUG) {
             // Log the result
-            Log.i(TAG, "Location services suspended. Please reconnect.");
+            Log.i(SlipBeep.APPTAG, "Location services suspended. Please reconnect.");
         }
 
     }
@@ -490,24 +570,20 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             showErrorDialog(connectionResult.getErrorCode());
            // Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
         }
-
     }
+
     private void showErrorDialog(int errorCode) {
         // Get the error dialog from Google Play services
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         Dialog errorDialog =
                 googleAPI.getErrorDialog(getActivity(), errorCode,
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
         // If Google Play services can provide an error dialog
         if (errorDialog != null) {
-
             // Create a new DialogFragment in which to show the error dialog
             ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-
             // Set the dialog in the DialogFragment
             errorFragment.setDialog(errorDialog);
-
             // Show the error dialog in the DialogFragment
             errorFragment.show(getActivity().getSupportFragmentManager(), SlipBeep.APPTAG);
         }
@@ -517,25 +593,20 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }*/
-    @Override
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         // Choose what to do based on the request code
         switch (requestCode) {
-
             // If the request code matches the code sent in onConnectionFailed
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-
                 switch (resultCode) {
                     // If Google Play services resolved the problem
                     case Activity.RESULT_OK:
-
                         if (SlipBeep.APPDEBUG) {
                             // Log the result
                             Log.d(SlipBeep.APPTAG, "Connected to Google Play services");
                         }
-
                         break;
-
                     // If any other result was returned by Google Play services
                     default:
                         if (SlipBeep.APPDEBUG) {
@@ -544,12 +615,31 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                         }
                         break;
                 }
-
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    // If location settings fixed
+                    case Activity.RESULT_OK:
+                        if (SlipBeep.APPDEBUG) {
+                            // Log the result
+                            Log.i(SlipBeep.APPTAG, "In activity result callback after location settings enabled");
+                            mGoogleApiClient.connect();
+                            //getLocation();
+                        }
+                        break;
+                    // If any other result was returned by Google Play services
+                    default:
+                        if (SlipBeep.APPDEBUG) {
+                            // Log the result
+                            Log.i(SlipBeep.APPTAG, "In activity result callback and setting location to null");
+                            currentLocation = null;
+                        }
+                        break;
+                }
                 // If any other request code was received
             default:
                 if (SlipBeep.APPDEBUG) {
                     // Report that this Activity received an unknown requestCode
-                    Log.d(SlipBeep.APPTAG, "Unknown request code received for the activity");
+                    Log.d(SlipBeep.APPTAG, "Unknown request code received by the mainactivity");
                 }
                 break;
         }
@@ -590,6 +680,8 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onLocationChanged(Location location) {
        //handleNewLocation(location);
+        Log.d(SlipBeep.APPTAG, "getting current location on event - locationChanged");
+        currentLocation = location;
     }
 
 
