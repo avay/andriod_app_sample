@@ -13,36 +13,39 @@
     <string name="tab_time">TIME</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="submit_parking_info">Submit</string>
-    <string name="hint_name">Full Name</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
-    <string name="btn_sign_up">Sign Up</string>
-    <string name="err_msg_name">Enter your full name</string>
-    <string name="err_msg_email">Enter valid email address</string>
-    <string name="err_msg_password">Enter the password</string>
+    <string name="hint_stname">Street Name</string>
+    <string name="hint_pincode">Pincode</string>
+    <string name="hint_dtladrs">Detail Address</string>
+    <string name="hint_cp_perday">Price Per Day</string>
+    <string name="hint_cp_perhr">Price Per Hour</string>
+    <string name="hint_cp_perweek">Price Per Week</string>
+    <string name="hint_cp_permth">Price Per Month</string>
+    <string name="tag_location">Find Me</string>
+    <string name="err_msg_pcount">Parking Space cannot be zero</string>
+    <string name="err_msg_stname">Street Name cannot be empty</string>
+    <string name="err_msg_pcode_empty">Pincode cannot be empty</string>
+    <string name="err_msg_pcode_invalid">Pincode is invalid</string>
+    <string name="err_msg_dtladrs">Address cannot be empty</string>
+    <string name="err_msg_pc">Atleast one of the rates is required</string>
     <string name="spinner_title">Parking Place</string>
-    <string name="hint_no_of_parking_space">No of Parking Space</string>
+    <string name="hint_no_of_parking_space">No of Parking Spaces</string>
     <string-array name="parking_types">
         <item><b>Parking Space</b></item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Private garage</item>
+        <item>Public garage</item>
+        <item>Private Parking lot</item>
+        <item>Private Field</item>
     </string-array>
     <string-array name="property_types">
         <item><b>Property Type</b></item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Other</item>
+        <item>Pvt residence</item>
+        <item>Office / Business</item>
+        <item>Hotel</item>
+        <item>Place of Worship</item>
+        <item>Commercial Parking lot</item>
+        <item>Retail</item>
+        <item>Academic Institution</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

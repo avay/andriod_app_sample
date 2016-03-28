@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity
     //private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     //private LocationRequest mLocationRequest;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         handleIntent(getIntent());
-
 
         /*if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -112,7 +110,6 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, firstFragment);
             //transaction.addToBackStack(null);
             transaction.commit();
-
 
         }
 

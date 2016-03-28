@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="0dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:fillViewport="true">
 
-<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -25,7 +25,7 @@
             android:layout_marginBottom="8dp">
             <Spinner
                 android:id="@+id/parking_types"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/parking_types"/>
         </android.support.v7.widget.CardView>
@@ -39,7 +39,7 @@
             android:layout_marginBottom="8dp">
             <Spinner
                 android:id="@+id/property_types"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/property_types"/>
         </android.support.v7.widget.CardView>
@@ -48,81 +48,154 @@
             android:id="@+id/input_layout_no_of_parking_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <EditText
                 android:id="@+id/input_no_of_parking_space"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:hint="@string/hint_no_of_parking_space" />
         </android.support.design.widget.TextInputLayout>
 
-
-        <!--<com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_stname"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            class="com.google.android.gms.maps.SupportMapFragment"/>-->
-        <!--<fragment
-            android:id="@+id/my_map_fragment"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp" />-->
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/input_stname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:singleLine="true"
+                android:hint="@string/hint_stname" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_pincode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/input_pincode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="number"
+                android:hint="@string/hint_pincode" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_dtladrs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <EditText
+                android:id="@+id/input_dtladrs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"
+                android:hint="@string/hint_dtladrs" />
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/my_map_fragment"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:orientation="vertical"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_name"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"/>
+        <Button android:id="@+id/map_tag"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/input_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:hint="@string/hint_name" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/input_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="@string/hint_email" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/hint_password" />
-        </android.support.design.widget.TextInputLayout>
-
-        <Button android:id="@+id/btn_signup"
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_sign_up"
+            android:text="@string/tag_location"
             android:background="@color/colorPrimary"
-            android:layout_marginTop="40dp"
-            android:textColor="@android:color/white"/>
+            android:layout_marginTop="0dp"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/my_map_fragment"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_cp_perhr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <EditText
+                android:id="@+id/input_cp_perhr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number|numberDecimal"
+                android:hint="@string/hint_cp_perhr"
+                android:drawableLeft="@drawable/ic_menu_pay"
+                android:drawablePadding="10dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_cp_perday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <EditText
+                android:id="@+id/input_cp_perday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number|numberDecimal"
+                android:hint="@string/hint_cp_perday"
+                android:drawableLeft="@drawable/ic_menu_pay"
+                android:drawablePadding="10dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_cp_perweek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <EditText
+                android:id="@+id/input_cp_perweek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number|numberDecimal"
+                android:hint="@string/hint_cp_perweek"
+                android:drawableLeft="@drawable/ic_menu_pay"
+                android:drawablePadding="10dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_cp_permth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/input_cp_permth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number|numberDecimal"
+                android:hint="@string/hint_cp_permth"
+                android:drawableLeft="@drawable/ic_menu_pay"
+                android:drawablePadding="10dp"/>
+        </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/openDialog"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="@android:color/holo_orange_light">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#555555"
+                android:singleLine="true"
+                android:textSize="18dp"
+                android:text="Enter Facilities" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

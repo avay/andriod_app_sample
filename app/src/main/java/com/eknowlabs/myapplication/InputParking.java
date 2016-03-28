@@ -58,6 +58,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,9 +89,11 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private CoordinatorLayout coordinatorLayout;
     private NestedScrollView nestedScrollView;
     private LinearLayout MapLayout;
-    private EditText inputName, inputEmail, inputPassword, inputSpaceCount;
-    private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword, inputLayoutSpaceCount;
-    private Button btnSignUp;
+    private EditText inputStName, inputPinCode, inputDtlAdrs, inputSpaceCount, inputCpPerHr, inputCpPerDay, inputCpPerWeek, inputCpPerMth;
+    private TextInputLayout inputLayoutStName, inputLayoutPinCode, inputLayoutDtlAdrs,
+            inputLayoutSpaceCount, inputLayoutCpPerHr, inputLayoutCpPerDay,
+            inputLayoutCpPerWeek, inputLayoutCpPerMth, inputLayoutPc;
+    private Button FindMyLocation;
     private Spinner Parking_types_spinner, Property_types_spinner;
     //private OnSubmitButtonPressListener mListener;
     private GoogleApiClient mGoogleApiClient;
@@ -102,6 +109,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private Location currentLocation;
     private MapFragment mMapFragment;
     private OnSubmitButtonPressListener mListener;
+
 
 
     public InputParking() {
@@ -133,6 +141,9 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                     .addConnectionCallbacks(this)
@@ -152,7 +163,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         if (nestedScrollView == null) {
             nestedScrollView = (NestedScrollView) inflater.inflate(R.layout.fragment_input_parking, container, false);
 
@@ -161,26 +172,45 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             Parking_types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             Parking_types_spinner.setAdapter(Parking_types_adapter);
             Parking_types_spinner.setOnItemSelectedListener(this);
+
             Property_types_spinner = (Spinner) nestedScrollView.findViewById(R.id.property_types);
-            ArrayAdapter<CharSequence> Property_types_adapter = ArrayAdapter.createFromResource(getContext(), R.array.parking_types, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> Property_types_adapter = ArrayAdapter.createFromResource(getContext(), R.array.property_types, android.R.layout.simple_spinner_item);
             Property_types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             Property_types_spinner.setAdapter(Property_types_adapter);
             Property_types_spinner.setOnItemSelectedListener(this);
+
             inputLayoutSpaceCount = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_no_of_parking_space);
-            inputLayoutName = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_name);
-            inputLayoutEmail = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_email);
-            inputLayoutPassword = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_password);
+            inputLayoutStName = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_stname);
+            inputLayoutPinCode = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_pincode);
+            inputLayoutDtlAdrs = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_dtladrs);
             inputSpaceCount = (EditText) nestedScrollView.findViewById(R.id.input_no_of_parking_space);
-            inputName = (EditText) nestedScrollView.findViewById(R.id.input_name);
-            inputEmail = (EditText) nestedScrollView.findViewById(R.id.input_email);
-            inputPassword = (EditText) nestedScrollView.findViewById(R.id.input_password);
-            btnSignUp = (Button) nestedScrollView.findViewById(R.id.btn_signup);
+            inputLayoutCpPerHr = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_cp_perhr);
+            inputLayoutCpPerDay = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_cp_perday);
+            inputLayoutCpPerWeek = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_cp_perweek);
+            inputLayoutCpPerMth = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_cp_permth);
+            inputLayoutPc = (TextInputLayout) nestedScrollView.findViewById(R.id.input_layout_pc);
+
+            inputStName = (EditText) nestedScrollView.findViewById(R.id.input_stname);
+            inputPinCode = (EditText) nestedScrollView.findViewById(R.id.input_pincode);
+            inputDtlAdrs = (EditText) nestedScrollView.findViewById(R.id.input_dtladrs);
+            inputCpPerDay = (EditText) nestedScrollView.findViewById(R.id.input_cp_perday);
+            inputCpPerHr = (EditText) nestedScrollView.findViewById(R.id.input_cp_perhr);
+            inputCpPerWeek = (EditText) nestedScrollView.findViewById(R.id.input_cp_perweek);
+            inputCpPerMth = (EditText) nestedScrollView.findViewById(R.id.input_cp_permth);
+
+
+            FindMyLocation = (Button) nestedScrollView.findViewById(R.id.map_tag);
+
             inputSpaceCount.addTextChangedListener(new MyTextWatcher(inputSpaceCount));
-            inputName.addTextChangedListener(new MyTextWatcher(inputName));
-            inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
-            inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
+            inputCpPerHr.addTextChangedListener(new MyTextWatcher(inputCpPerHr));
+            inputCpPerDay.addTextChangedListener(new MyTextWatcher(inputCpPerDay));
+            inputCpPerWeek.addTextChangedListener(new MyTextWatcher(inputCpPerWeek));
+            inputCpPerMth.addTextChangedListener(new MyTextWatcher(inputCpPerMth));
+            inputStName.addTextChangedListener(new MyTextWatcher(inputStName));
+            inputPinCode.addTextChangedListener(new MyTextWatcher(inputPinCode));
+            inputDtlAdrs.addTextChangedListener(new MyTextWatcher(inputDtlAdrs));
             //MapLayout = (LinearLayout) nestedScrollView.findViewById(R.id.my_map_fragment);
-            btnSignUp.setOnClickListener(new View.OnClickListener() {
+            FindMyLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //submitForm();
@@ -194,29 +224,18 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                         mListener.SubmitButtonPress(latLng);
                     }
                     //handleNewLocation(currentLocation);
-
                 }
             });
-
-                FragmentManager fm1 = getChildFragmentManager();
-                mMapFragment = MapFragment.newInstance(new LatLng(0, 0));
-                FragmentTransaction ip_ftr = fm1.beginTransaction();
-                ip_ftr.add(R.id.my_map_fragment, mMapFragment);
-                ip_ftr.commit();
-                //fm.executePendingTransactions();
-
+            FragmentManager fm1 = getChildFragmentManager();
+            mMapFragment = MapFragment.newInstance(new LatLng(0, 0));
+            FragmentTransaction ip_ftr = fm1.beginTransaction();
+            ip_ftr.add(R.id.my_map_fragment, mMapFragment);
+            ip_ftr.commit();
+            //fm.executePendingTransactions();
         }
         //return inflater.inflate(R.layout.fragment_input_parking, container, false);
         return nestedScrollView;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    /*public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            String teststr = "input parking fragment";
-            mListener.SubmitButtonPress(teststr);
-        }
-    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -250,7 +269,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
-       // mapView.onPause();
+        // mapView.onPause();
     }
 
     @Override
@@ -262,7 +281,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-       // mapView.onLowMemory();
+        // mapView.onLowMemory();
     }
 
     @Override
@@ -277,24 +296,27 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             return;
         }
 
-        if (!validateName()) {
+        if (!validateStName()) {
             return;
         }
 
-        if (!validateEmail()) {
+        if (!validatePinCode()) {
             return;
         }
 
-        if (!validatePassword()) {
+        if (!validateDtlAdrs()) {
             return;
         }
 
+        if (!validatePriceChart()) {
+            return;
+        }
         Toast.makeText(getActivity(), "Thank You!", Toast.LENGTH_SHORT).show();
     }
 
     private boolean validateSpaceCount() {
         if (inputSpaceCount.getText().toString().trim().isEmpty()) {
-            inputLayoutSpaceCount.setError(getString(R.string.err_msg_name));
+            inputLayoutSpaceCount.setError(getString(R.string.err_msg_pcount));
             //requestFocus(inputName);
             //inputName.requestFocus();
             return false;
@@ -304,56 +326,72 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
         return true;
     }
 
-    private boolean validateName() {
-        if (inputName.getText().toString().trim().isEmpty()) {
-            inputLayoutName.setError(getString(R.string.err_msg_name));
+    private boolean validateStName() {
+        if (inputStName.getText().toString().trim().isEmpty()) {
+            inputLayoutStName.setError(getString(R.string.err_msg_stname));
             //requestFocus(inputName);
             //inputName.requestFocus();
             return false;
         } else {
-            inputLayoutName.setErrorEnabled(false);
+            inputLayoutStName.setErrorEnabled(false);
         }
 
         return true;
     }
 
-    private boolean validateEmail() {
-        String email = inputEmail.getText().toString().trim();
-
-        if (email.isEmpty() || !isValidEmail(email)) {
-            inputLayoutEmail.setError(getString(R.string.err_msg_email));
+    private boolean validatePinCode() {
+        String pincode = inputPinCode.getText().toString().trim();
+        String pattern = "^\\d{6}$";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(pincode);
+        if (pincode.isEmpty()) {
+            inputLayoutPinCode.setError(getString(R.string.err_msg_pcode_empty));
             //requestFocus(inputEmail);
             //inputEmail.requestFocus();
             return false;
+        }
+        else if(!m.matches()){
+            inputLayoutPinCode.setError(getString(R.string.err_msg_pcode_invalid));
+            return false;
         } else {
-            inputLayoutEmail.setErrorEnabled(false);
+            inputLayoutPinCode.setErrorEnabled(false);
         }
 
         return true;
     }
 
-    private boolean validatePassword() {
-        if (inputPassword.getText().toString().trim().isEmpty()) {
-            inputLayoutPassword.setError(getString(R.string.err_msg_password));
+    private boolean validateDtlAdrs() {
+        if (inputDtlAdrs.getText().toString().trim().isEmpty()) {
+            inputLayoutDtlAdrs.setError(getString(R.string.err_msg_dtladrs));
             //inputPassword.requestFocus(inputPassword);
             //inputPassword.requestFocus();
             return false;
         } else {
-            inputLayoutPassword.setErrorEnabled(false);
+            inputLayoutDtlAdrs.setErrorEnabled(false);
         }
 
         return true;
     }
 
-    private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private boolean validatePriceChart() {
+        if (!(inputCpPerHr.getText().toString().trim().isEmpty()) || !(inputCpPerDay.getText().toString().trim().isEmpty())
+            || !(inputCpPerWeek.getText().toString().trim().isEmpty()) || !(inputCpPerMth.getText().toString().trim().isEmpty())){
+            inputLayoutPc.setError(getString(R.string.err_msg_pc));
+            //inputPassword.requestFocus(inputPassword);
+            //inputPassword.requestFocus();
+            return false;
+        } else {
+            inputLayoutPc.setErrorEnabled(false);
+        }
+
+        return true;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
         // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+        //Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -417,29 +455,29 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     }
 
 
-        private void getLocation() {
+    private void getLocation() {
 
-            // Get the current location
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                Log.i(SlipBeep.APPTAG, "permission to access fine location is not mentioned in manifest");
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-                return;
-            }
-            PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-            Log.d(TAG, "Location update started ..............: ");
-            //currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (currentLocation == null){
-                Log.i(SlipBeep.APPTAG, "currentlocation is still null after fused location api settings");
-            }
+        // Get the current location
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            Log.i(SlipBeep.APPTAG, "permission to access fine location is not mentioned in manifest");
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
         }
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+        Log.d(TAG, "Location update started ..............: ");
+        //currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (currentLocation == null){
+            Log.i(SlipBeep.APPTAG, "currentlocation is still null after fused location api settings");
+        }
+    }
 
     private boolean servicesConnected() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -489,35 +527,6 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
         }*/
     }
 
-    /*private void handleNewLocation(Location mLastLocation) {
-        //if (mLastLocation == null) {
-            ////String error_msg = " no location data recived";
-            //Toast.makeText(getContext(), error_msg, Toast.LENGTH_SHORT).show();
-        //}
-        //else if (mLastLocation != null) {
-            *//*double currentLatitude = mLastLocation.getLatitude();
-            double currentLongitude = mLastLocation.getLongitude();
-            LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-            String latlong = String.valueOf(mLastLocation.getLatitude()) + String.valueOf(mLastLocation.getLongitude());
-            Toast.makeText(getContext(), latlong, Toast.LENGTH_SHORT).show();*//*
-            //String parking_name = "test";
-            //if (latLng != null) {
-                //MapFragment newMapFragment = new MapFragment();
-                mMapFragment.changeMap(latLng);
-                //FragmentManager fm1 = getChildFragmentManager();
-            *//*MapFragment newMapFragment = MapFragment.newInstance(latLng);
-            FragmentTransaction ip_ftr = getChildFragmentManager().beginTransaction();
-            ip_ftr.replace(R.id.my_map_fragment, newMapFragment);
-            ip_ftr.commit();
-            transaction.replace(R.id.fragment_container, fragment);*//*
-                //MarkerOptions options = new MarkerOptions().position(latLng).title("I am here!");
-                //googleMap.addMarker(options);
-                //googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-           // }
-        //}
-        //String latlong = String.valueOf(mLastLocation.getLatitude()) + String.valueOf(mLastLocation.getLongitude());
-        //Toast.makeText(MainActivity.this, latlong, Toast.LENGTH_SHORT).show();
-    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -568,7 +577,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             }
         } else {
             showErrorDialog(connectionResult.getErrorCode());
-           // Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
+            // Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
 
@@ -664,22 +673,23 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                 case R.id.input_no_of_parking_space:
                     validateSpaceCount();
                     break;
-                case R.id.input_name:
-                    validateName();
+                case R.id.input_stname:
+                    validateStName();
                     break;
-                case R.id.input_email:
-                    validateEmail();
+                case R.id.input_pincode:
+                    validatePinCode();
                     break;
-                case R.id.input_password:
-                    validatePassword();
+                case R.id.input_dtladrs:
+                    validateDtlAdrs();
                     break;
+
             }
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-       //handleNewLocation(location);
+        //handleNewLocation(location);
         Log.d(SlipBeep.APPTAG, "getting current location on event - locationChanged");
         currentLocation = location;
     }
