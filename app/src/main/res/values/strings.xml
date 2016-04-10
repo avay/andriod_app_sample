@@ -21,6 +21,8 @@
     <string name="hint_cp_perweek">Price Per Week</string>
     <string name="hint_cp_permth">Price Per Month</string>
     <string name="tag_location">Find Me</string>
+    <string name="enter_facilities">Select Facilities</string>
+    <string name="select_facility">Select Facilities</string>
     <string name="err_msg_pcount">Parking Space cannot be zero</string>
     <string name="err_msg_stname">Street Name cannot be empty</string>
     <string name="err_msg_pcode_empty">Pincode cannot be empty</string>
@@ -46,6 +48,15 @@
         <item>Commercial Parking lot</item>
         <item>Retail</item>
         <item>Academic Institution</item>
+    </string-array>
+    <string-array name="Facilities">
+        <item>CCTV</item>
+        <item>Lighting</item>
+        <item>Security gates</item>
+        <item>Security guards</item>
+        <item>Security keys</item>
+        <item>Sheltered parking</item>
+        <item>Free Ambulance Parking</item>
     </string-array>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

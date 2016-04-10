@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,6 +37,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -94,8 +98,10 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
             inputLayoutSpaceCount, inputLayoutCpPerHr, inputLayoutCpPerDay,
             inputLayoutCpPerWeek, inputLayoutCpPerMth, inputLayoutPc;
     private Button FindMyLocation;
+    private TextView SelectFacilities;
     private Spinner Parking_types_spinner, Property_types_spinner;
     //private OnSubmitButtonPressListener mListener;
+    private ArrayList<Integer> selectedItemIndexList;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private GoogleMap googleMap;
@@ -109,6 +115,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     private Location currentLocation;
     private MapFragment mMapFragment;
     private OnSubmitButtonPressListener mListener;
+    //private multiChoiceListDailogListener fclListener;
 
 
 
@@ -200,6 +207,7 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
 
 
             FindMyLocation = (Button) nestedScrollView.findViewById(R.id.map_tag);
+            SelectFacilities = (TextView) nestedScrollView.findViewById(R.id.btn_facl);
 
             inputSpaceCount.addTextChangedListener(new MyTextWatcher(inputSpaceCount));
             inputCpPerHr.addTextChangedListener(new MyTextWatcher(inputCpPerHr));
@@ -226,6 +234,59 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
                     //handleNewLocation(currentLocation);
                 }
             });
+
+            SelectFacilities.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick( View view){
+                        selectedItemIndexList = new ArrayList();
+                        boolean[] isSelectedArray = {false, false, false, false, false, false, false};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle(R.string.select_facility)
+                                .setMultiChoiceItems(R.array.Facilities, isSelectedArray,
+                                        new DialogInterface.OnMultiChoiceClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which, boolean isSelectedArray) {
+                                                if (isSelectedArray){
+                                                    selectedItemIndexList.add(which);
+                                                }
+                                                else if (selectedItemIndexList.contains(which)) {
+                                                    selectedItemIndexList.remove(which);
+                                                }
+
+                                            }
+                                        })
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        StringBuilder str_facl = new StringBuilder();
+                                        if ( selectedItemIndexList.size() != 0 ){
+                                            Resources res = getResources();
+                                            String[] facl_array = res.getStringArray(R.array.Facilities);
+                                            for ( int i = 0; i < selectedItemIndexList.size(); i++){
+                                                String facility = facl_array[selectedItemIndexList.get(i)];
+                                                str_facl = str_facl.append(", " + facility);
+                                            }
+                                        }
+                                        if (str_facl.toString().trim().equals("")) {
+                                            SelectFacilities.setText(R.string.select_facility);
+                                            str_facl.setLength(0);
+
+                                        } else {
+                                            SelectFacilities.setText(str_facl);
+                                        }
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SelectFacilities.setText(R.string.select_facility);
+                                    }
+                                });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+
             FragmentManager fm1 = getChildFragmentManager();
             mMapFragment = MapFragment.newInstance(new LatLng(0, 0));
             FragmentTransaction ip_ftr = fm1.beginTransaction();
@@ -240,11 +301,13 @@ public class InputParking extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnSubmitButtonPressListener) {
+        //if (context instanceof OnSubmitButtonPressListener && context instanceof multiChoiceListDailogListener) {
+            if (context instanceof OnSubmitButtonPressListener) {
             mListener = (OnSubmitButtonPressListener) context;
+            //fclListener = (multiChoiceListDailogListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnSubmitButtonPressListener & multiChoiceListDailogListener");
         }
     }
 
