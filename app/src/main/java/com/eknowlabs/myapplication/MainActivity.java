@@ -8,14 +8,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.SearchView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -51,6 +58,11 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -290,16 +302,26 @@ public class MainActivity extends AppCompatActivity
         if ( requestCode == 100) {
             firstFragment.onActivityResult(requestCode, resultCode, data);
         }
-        else if (requestCode == 101) {
+        else if (requestCode == 101 || requestCode == 9000 || requestCode == 102 || requestCode == 103) {
             secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             //secondFragment =
             secondFragment.onActivityResult(requestCode, resultCode, data);
         }
-        else if (requestCode == 9000) {
+        /*else if (requestCode == 9000) {
             secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             secondFragment.onActivityResult(requestCode, resultCode, data);
         }
+        else if (requestCode == 102) {
+            secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            secondFragment.onActivityResult(requestCode, resultCode, data);
+
+        }
+        else if (requestCode == 103) {
+            secondFragment = (InputParking) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            secondFragment.onActivityResult(requestCode, resultCode, data);
+        }*/
     }
+
 
     /*private boolean servicesConnected() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
